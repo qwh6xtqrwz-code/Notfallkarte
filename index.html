@@ -12,7 +12,13 @@
 <title>Notfallkarte – St. Anna Kinderspital</title>
 <style>
 400;500;700&family=JetBrains+Mono:wght@500;700&display=swap');
-:root{--bg:#0f1117;--surface:#1a1d27;--surface2:#232736;--border:#2d3244;--text:#e8eaed;--text2:#9ca3af;--red:#ef4444;--red-bg:#2d1215;--green:#22c55e;--green-bg:#0d2818;--blue:#3b82f6;--blue-bg:#172554;--orange:#f59e0b;--orange-bg:#2d1f04;--purple:#a78bfa;--purple-bg:#1e1636;--cyan:#22d3ee;--cyan-bg:#0c2d33;--pink:#ec4899;--pink-bg:#2d1226}
+:root{
+--priority-critical:#ef4444;
+--priority-urgent:#f59e0b;
+--priority-caution:#eab308;
+--priority-stable:#22c55e;
+--priority-info:#3b82f6;
+--bg:#0f1117;--surface:#1a1d27;--surface2:#232736;--border:#2d3244;--text:#e8eaed;--text2:#9ca3af;--red:#ef4444;--red-bg:#2d1215;--green:#22c55e;--green-bg:#0d2818;--blue:#3b82f6;--blue-bg:#172554;--orange:#f59e0b;--orange-bg:#2d1f04;--purple:#a78bfa;--purple-bg:#1e1636;--cyan:#22d3ee;--cyan-bg:#0c2d33;--pink:#ec4899;--pink-bg:#2d1226}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);overscroll-behavior:none;overflow-x:hidden}
 .app{max-width:430px;margin:0 auto;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;background:var(--bg)}
@@ -30,16 +36,16 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .custom-weight span{font-size:12px;color:var(--text2)}
 .content{flex:1;padding:12px 16px 100px;overflow-y:auto}
 .home-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.home-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px 14px;cursor:pointer;transition:all .15s;display:flex;flex-direction:column;gap:8px}
-.home-card:active{transform:scale(0.97)}
-.home-card .icon-wrap{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px}
-.home-card h3{font-size:14px;font-weight:700;line-height:1.2}
-.home-card p{font-size:11px;color:var(--text2);line-height:1.3}
-.home-card.full-width{grid-column:1/-1}
-.home-card.prio-rot{border-left:3px solid var(--red)}
-.home-card.prio-orange{border-left:3px solid var(--orange)}
-.home-card.prio-gelb{border-left:3px solid #facc15}
-.home-card.prio-blau{border-left:3px solid var(--blue)}
+.home-card priority-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px 14px;cursor:pointer;transition:all .15s;display:flex;flex-direction:column;gap:8px}
+.home-card priority-card:active{transform:scale(0.97)}
+.home-card priority-card .icon-wrap{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px}
+.home-card priority-card h3{font-size:14px;font-weight:700;line-height:1.2}
+.home-card priority-card p{font-size:11px;color:var(--text2);line-height:1.3}
+.home-card priority-card.full-width{grid-column:1/-1}
+.home-card priority-card.prio-rot{border-left:3px solid var(--red)}
+.home-card priority-card.prio-orange{border-left:3px solid var(--orange)}
+.home-card priority-card.prio-gelb{border-left:3px solid #facc15}
+.home-card priority-card.prio-blau{border-left:3px solid var(--blue)}
 .prio-tag{font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px;letter-spacing:.3px;text-transform:uppercase;align-self:flex-start}
 .prio-tag.rot{background:var(--red-bg);color:var(--red)}
 .prio-tag.orange{background:var(--orange-bg);color:var(--orange)}
@@ -107,6 +113,16 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .expand-chevron{transition:transform .2s;color:var(--text2);font-size:14px}
 .expand-chevron.open{transform:rotate(90deg)}
 .dose-sep{color:var(--text2);align-self:center;font-size:16px}
+
+.priority-card:nth-child(1){border-color:var(--priority-critical)}
+.priority-card:nth-child(2){border-color:var(--priority-urgent)}
+.priority-card:nth-child(3){border-color:var(--priority-critical)}
+.priority-card:nth-child(4){border-color:var(--priority-critical)}
+.priority-card:nth-child(5){border-color:var(--priority-urgent)}
+.priority-card:nth-child(6){border-color:var(--priority-info)}
+.priority-card:nth-child(7){border-color:var(--priority-urgent)}
+.priority-card:nth-child(8){border-color:var(--priority-caution)}
+.priority-card:nth-child(9){border-color:var(--priority-critical)}
 </style>
 </head>
 <body>
@@ -324,7 +340,7 @@ const cards=[
 {id:'herzstillstand',t:'Herzstillstand',d:'CPR-Algorithmus',ico:ICO.heart,c:'var(--red)',bg:'var(--red-bg)',prio:'rot',pl:'Vital',full:true}
 ];
 cards.forEach(c=>{
-const card=h('div','home-card'+(c.full?' full-width':'')+' prio-'+c.prio);
+const card=h('div','home-card priority-card'+(c.full?' full-width':'')+' prio-'+c.prio);
 card.innerHTML=`<div class="icon-wrap" style="background:${c.bg};color:${c.c}">${c.ico}</div><h3>${c.t}</h3><p>${c.d}</p><span class="prio-tag ${c.prio}">${c.pl}</span>`;
 card.onclick=()=>{state.page=c.id;render()};
 grid.appendChild(card);
