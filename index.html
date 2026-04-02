@@ -13,6 +13,12 @@
 <style>
 400;500;700&family=JetBrains+Mono:wght@500;700&display=swap');
 :root{
+--text:#ffffff;
+--text2:#d1d5db;
+--border:#3b4258;
+--surface:#1f2430;
+--surface2:#2a3142;
+
 --priority-critical:#ef4444;
 --priority-urgent:#f59e0b;
 --priority-caution:#eab308;
@@ -20,27 +26,27 @@
 --priority-info:#3b82f6;
 --bg:#0f1117;--surface:#1a1d27;--surface2:#232736;--border:#2d3244;--text:#e8eaed;--text2:#9ca3af;--red:#ef4444;--red-bg:#2d1215;--green:#22c55e;--green-bg:#0d2818;--blue:#3b82f6;--blue-bg:#172554;--orange:#f59e0b;--orange-bg:#2d1f04;--purple:#a78bfa;--purple-bg:#1e1636;--cyan:#22d3ee;--cyan-bg:#0c2d33;--pink:#ec4899;--pink-bg:#2d1226}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);overscroll-behavior:none;overflow-x:hidden}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:#ffffff;overscroll-behavior:none;overflow-x:hidden}
 .app{max-width:430px;margin:0 auto;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;background:var(--bg)}
 .header{position:sticky;top:0;z-index:100;background:rgba(15,17,23,0.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:12px 16px;padding-top:max(12px,env(safe-area-inset-top))}
 .header-top{display:flex;align-items:center;gap:12px;margin-bottom:10px}
 .header h1{font-size:17px;font-weight:700;letter-spacing:-0.3px;flex:1}
 .header-badge{font-size:10px;font-weight:700;padding:3px 8px;border-radius:6px;background:var(--red);color:white;letter-spacing:.5px;text-transform:uppercase}
-.back-btn{background:var(--surface2);border:none;color:var(--text);width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.back-btn{background:var(--surface2);border:none;color:#ffffff;width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer}
 .weight-bar{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;padding:2px 0}
 .weight-bar::-webkit-scrollbar{display:none}
-.weight-chip{flex-shrink:0;padding:5px 10px;border-radius:8px;font-size:12px;font-weight:500;border:1px solid var(--border);background:transparent;color:var(--text2);cursor:pointer;transition:all .15s;white-space:nowrap;font-family:inherit}
+.weight-chip{flex-shrink:0;padding:5px 10px;border-radius:8px;font-size:12px;font-weight:500;border:1px solid var(--border);background:transparent;color:#e5e7eb;cursor:pointer;transition:all .15s;white-space:nowrap;font-family:inherit}
 .weight-chip.active{background:var(--blue);border-color:var(--blue);color:white;font-weight:700}
 .custom-weight{display:flex;align-items:center;gap:6px;flex-shrink:0;margin-left:4px}
-.custom-weight input{width:52px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:5px 6px;font-size:13px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;text-align:center}
-.custom-weight span{font-size:12px;color:var(--text2)}
+.custom-weight input{width:52px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:#ffffff;padding:5px 6px;font-size:13px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;text-align:center}
+.custom-weight span{font-size:12px;color:#e5e7eb}
 .content{flex:1;padding:12px 16px 100px;overflow-y:auto}
 .home-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .home-card priority-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px 14px;cursor:pointer;transition:all .15s;display:flex;flex-direction:column;gap:8px}
 .home-card priority-card:active{transform:scale(0.97)}
 .home-card priority-card .icon-wrap{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px}
 .home-card priority-card h3{font-size:14px;font-weight:700;line-height:1.2}
-.home-card priority-card p{font-size:11px;color:var(--text2);line-height:1.3}
+.home-card priority-card p{font-size:11px;color:#e5e7eb;line-height:1.3}
 .home-card priority-card.full-width{grid-column:1/-1}
 .home-card priority-card.prio-rot{border-left:3px solid var(--red)}
 .home-card priority-card.prio-orange{border-left:3px solid var(--orange)}
@@ -51,22 +57,22 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .prio-tag.orange{background:var(--orange-bg);color:var(--orange)}
 .prio-tag.gelb{background:#2d2904;color:#facc15}
 .prio-tag.blau{background:var(--blue-bg);color:var(--blue)}
-.section-title{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text2);margin:20px 0 10px}
+.section-title{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#e5e7eb;margin:20px 0 10px}
 .section-title:first-child{margin-top:4px}
 .drug-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:8px}
 .drug-name{font-size:14px;font-weight:700;margin-bottom:2px}
-.drug-conc{font-size:11px;color:var(--text2);margin-bottom:8px}
+.drug-conc{font-size:11px;color:#e5e7eb;margin-bottom:8px}
 .drug-doses{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:6px;align-items:center}
 .dose-box{display:flex;flex-direction:column;align-items:center;gap:2px}
 .dose-value{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:18px;font-weight:700}
-.dose-unit{font-size:11px;color:var(--text2)}
-.dose-label{font-size:10px;color:var(--text2)}
+.dose-unit{font-size:11px;color:#e5e7eb}
+.dose-label{font-size:10px;color:#e5e7eb}
 .dose-ml{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:14px;font-weight:500;padding:4px 10px;border-radius:6px;margin-top:2px}
 .drug-notes{font-size:11px;color:var(--orange);margin-top:6px;line-height:1.4}
 .drug-route{display:inline-block;font-size:10px;font-weight:700;padding:2px 6px;border-radius:4px;margin-right:4px;background:var(--blue-bg);color:var(--blue)}
 .equip-row{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:8px}
 .equip-item{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 12px;text-align:center}
-.equip-item .label{font-size:10px;color:var(--text2);margin-bottom:2px}
+.equip-item .label{font-size:10px;color:#e5e7eb;margin-bottom:2px}
 .equip-item .val{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:16px;font-weight:700}
 .algo-split{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
 .algo-branch{border-radius:12px;padding:12px;border:2px solid}
@@ -76,7 +82,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .algo-box h4{font-size:13px;font-weight:700;margin-bottom:6px}
 .algo-box ul{list-style:none;padding:0}
 .algo-box ul li{font-size:12px;line-height:1.6;padding-left:12px;position:relative}
-.algo-box ul li::before{content:'•';position:absolute;left:0;color:var(--text2)}
+.algo-box ul li::before{content:'•';position:absolute;left:0;color:#e5e7eb}
 .abcde-card{background:var(--surface);border-radius:14px;border:1px solid var(--border);margin-bottom:10px;overflow:hidden}
 .abcde-header{padding:12px 14px;display:flex;align-items:center;gap:10px;cursor:pointer}
 .abcde-letter{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:white;flex-shrink:0}
@@ -84,13 +90,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .abcde-body{padding:0 14px 14px}
 .abcde-cols{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .abcde-col{background:var(--surface2);border-radius:8px;padding:10px}
-.abcde-col h5{font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--text2);margin-bottom:6px}
+.abcde-col h5{font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:#e5e7eb;margin-bottom:6px}
 .abcde-col li{font-size:12px;line-height:1.5;list-style:none;padding-left:10px;position:relative}
-.abcde-col li::before{content:'›';position:absolute;left:0;color:var(--text2)}
+.abcde-col li::before{content:'›';position:absolute;left:0;color:#e5e7eb}
 .pews-category{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:8px}
 .pews-category h4{font-size:13px;font-weight:700;margin-bottom:8px}
 .pews-scores{display:flex;gap:4px}
-.pews-score-btn{flex:1;padding:8px 4px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--text);font-size:11px;cursor:pointer;text-align:center;transition:all .15s;font-family:'DM Sans',sans-serif}
+.pews-score-btn{flex:1;padding:8px 4px;border-radius:8px;border:1px solid var(--border);background:transparent;color:#ffffff;font-size:11px;cursor:pointer;text-align:center;transition:all .15s;font-family:'DM Sans',sans-serif}
 .pews-score-btn .score-num{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:14px;font-weight:700;display:block;margin-bottom:2px}
 .pews-score-btn.s0{border-color:#22c55e33}.pews-score-btn.s1{border-color:#f59e0b33}.pews-score-btn.s2{border-color:#f9731633}.pews-score-btn.s4{border-color:#ef444433}
 .pews-score-btn.active.s0{background:var(--green-bg);border-color:var(--green);color:var(--green)}
@@ -105,14 +111,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .phone-item .name{font-size:13px;font-weight:500}
 .phone-item .number{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:16px;font-weight:700;color:var(--blue)}
 .tab-bar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:rgba(15,17,23,0.95);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid var(--border);display:flex;justify-content:space-around;padding:6px 0;padding-bottom:max(6px,env(safe-area-inset-bottom));z-index:100}
-.tab-btn{background:none;border:none;color:var(--text2);font-size:10px;font-family:'DM Sans',sans-serif;display:flex;flex-direction:column;align-items:center;gap:3px;padding:4px 8px;cursor:pointer;transition:color .15s;min-width:54px}
+.tab-btn{background:none;border:none;color:#e5e7eb;font-size:10px;font-family:'DM Sans',sans-serif;display:flex;flex-direction:column;align-items:center;gap:3px;padding:4px 8px;cursor:pointer;transition:color .15s;min-width:54px}
 .tab-btn.active{color:var(--blue)}
 .info-banner{background:var(--blue-bg);border:1px solid rgba(59,130,246,0.3);border-radius:10px;padding:10px 12px;font-size:11px;color:var(--blue);line-height:1.4;margin-bottom:12px}
 .warning-banner{background:var(--red-bg);border:1px solid rgba(239,68,68,0.3);border-radius:10px;padding:10px 12px;font-size:11px;color:var(--red);line-height:1.4;margin-bottom:12px;font-weight:500}
 .stufe-header{padding:10px 14px;border-radius:10px;margin-bottom:10px;font-size:14px;font-weight:700}
-.expand-chevron{transition:transform .2s;color:var(--text2);font-size:14px}
+.expand-chevron{transition:transform .2s;color:#e5e7eb;font-size:14px}
 .expand-chevron.open{transform:rotate(90deg)}
-.dose-sep{color:var(--text2);align-self:center;font-size:16px}
+.dose-sep{color:#e5e7eb;align-self:center;font-size:16px}
 
 .priority-card:nth-child(1){border-color:var(--priority-critical)}
 .priority-card:nth-child(2){border-color:var(--priority-urgent)}
@@ -123,6 +129,149 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .priority-card:nth-child(7){border-color:var(--priority-urgent)}
 .priority-card:nth-child(8){border-color:var(--priority-caution)}
 .priority-card:nth-child(9){border-color:var(--priority-critical)}
+
+/* --- Accessibility patch: higher contrast + larger text --- */
+body{
+  color:#ffffff!important;
+  font-size:18px!important;
+  line-height:1.45!important;
+}
+.header{
+  background:rgba(15,17,23,0.98)!important;
+  border-bottom:1px solid #475069!important;
+}
+.header h1{
+  font-size:22px!important;
+  color:#ffffff!important;
+}
+.header-badge{
+  font-size:11px!important;
+}
+.weight-chip,
+.tab-btn,
+.back-btn,
+.pews-score-btn,
+.home-card,
+.drug-card,
+.algo-box,
+.equip-item,
+.phone-item,
+.abcde-card,
+.pews-category{
+  color:#ffffff!important;
+}
+.weight-chip{
+  font-size:14px!important;
+  border-color:#59637d!important;
+  color:#f3f4f6!important;
+}
+.weight-chip.active{
+  color:#ffffff!important;
+}
+.custom-weight input{
+  font-size:16px!important;
+  color:#ffffff!important;
+  background:#2a3142!important;
+  border-color:#68738f!important;
+}
+.custom-weight span{
+  font-size:13px!important;
+  color:#e5e7eb!important;
+}
+.content{
+  font-size:18px!important;
+}
+.home-card h3{
+  font-size:18px!important;
+  color:#ffffff!important;
+}
+.home-card p{
+  font-size:14px!important;
+  color:#e5e7eb!important;
+  line-height:1.45!important;
+}
+.section-title{
+  font-size:15px!important;
+  color:#e5e7eb!important;
+}
+.info-banner,
+.warning-banner{
+  font-size:14px!important;
+  line-height:1.5!important;
+}
+.drug-name{
+  font-size:18px!important;
+  color:#ffffff!important;
+}
+.drug-conc,
+.drug-notes,
+.dose-unit,
+.dose-label,
+.equip-item .label,
+.phone-item .name{
+  font-size:14px!important;
+  color:#e5e7eb!important;
+}
+.dose-value{
+  font-size:24px!important;
+}
+.dose-ml{
+  font-size:18px!important;
+}
+.equip-item .val,
+.phone-item .number{
+  font-size:20px!important;
+}
+.algo-branch h4,
+.algo-box h4,
+.pews-category h4,
+.abcde-header h3{
+  font-size:17px!important;
+  color:#ffffff!important;
+}
+.algo-branch p,
+.algo-box ul li,
+.abcde-col li{
+  font-size:15px!important;
+  color:#f3f4f6!important;
+}
+.abcde-col h5{
+  font-size:12px!important;
+  color:#d1d5db!important;
+}
+.pews-score-btn{
+  font-size:13px!important;
+  color:#ffffff!important;
+}
+.pews-score-btn .score-num{
+  font-size:18px!important;
+}
+.stufe-header{
+  font-size:17px!important;
+}
+.tab-bar{
+  background:rgba(15,17,23,0.99)!important;
+  border-top:1px solid #475069!important;
+}
+.tab-btn{
+  color:#d1d5db!important;
+  font-size:12px!important;
+}
+.tab-btn.active{
+  color:#ffffff!important;
+}
+.tab-btn svg{
+  width:24px!important;
+  height:24px!important;
+}
+.phone-item{
+  background:#1f2430!important;
+  border-color:#4b556f!important;
+}
+.expand-chevron{
+  color:#f3f4f6!important;
+}
+
 </style>
 </head>
 <body>
@@ -314,7 +463,7 @@ const mg=dose(d,kg);
 const m=ml(d,kg);
 let doses=`<div class="dose-box"><div class="dose-value" style="color:${color}">${mg}</div><div class="dose-unit">${d.u}</div></div>`;
 if(m!==null)doses+=`<div class="dose-box"><div class="dose-ml" style="background:${color}15;color:${color}">${m} ml</div></div>`;
-if(d.spr)doses+=`<div class="dose-box" style="justify-content:center"><div style="font-size:11px;color:var(--text2)">${d.spr(kg)}</div></div>`;
+if(d.spr)doses+=`<div class="dose-box" style="justify-content:center"><div style="font-size:11px;color:#e5e7eb">${d.spr(kg)}</div></div>`;
 let extra='';
 if(d.route)extra=`<span class="drug-route" style="margin-left:6px">${d.route}</span>`;
 c.innerHTML=`<div class="drug-name" style="color:${color}">${d.name}</div>
@@ -361,7 +510,7 @@ el.innerHTML=`<div class="section-title" style="color:var(--green)">Atemwegsequi
 <div class="equip-item"><div class="label">Larynxmaske Größe</div><div class="val" style="color:var(--green)">${eq.lm}</div></div>
 <div class="equip-item" style="grid-column:1/-1"><div class="label">Maske/Laryngoskop – Spatel</div><div class="val">${eq.sp}</div></div>
 </div>
-<div style="font-size:11px;color:var(--text2);margin-bottom:12px">&gt;2 J: Alter/4 + 3,5 (gecufft) bzw. Alter/4 + 4 (ungecufft)</div>
+<div style="font-size:11px;color:#e5e7eb;margin-bottom:12px">&gt;2 J: Alter/4 + 3,5 (gecufft) bzw. Alter/4 + 4 (ungecufft)</div>
 <div class="section-title" style="color:var(--green)">Intubationsmedikamente</div>
 <div class="info-banner">Dosis berechnet für <strong>${kg} kg</strong></div>`;
 INTUBATION.forEach(d=>el.appendChild(drugCard(d,kg,'var(--green)')));
@@ -425,7 +574,7 @@ let html=`<div class="drug-name" style="color:var(--purple)">${d.name}</div><div
 ${m1!==null?`<div class="dose-box"><div class="dose-ml" style="background:var(--purple-bg);color:var(--purple)">${m1} ml</div></div>`:''}`;
 if(d.d2kg){
 const mg2=R(Math.min(d.d2kg*kg,d.d2max));const m2=R(Math.min(d.d2kg*kg,d.d2max)/d.mc,2);
-html+=`<div style="color:var(--text2);align-self:center;font-size:12px">2. Gabe:</div>
+html+=`<div style="color:#e5e7eb;align-self:center;font-size:12px">2. Gabe:</div>
 <div class="dose-box"><div class="dose-value" style="color:var(--purple)">${mg2}</div><div class="dose-unit">${d.u}</div></div>
 <div class="dose-box"><div class="dose-ml" style="background:var(--purple-bg);color:var(--purple)">${m2} ml</div></div>`;
 }
@@ -446,7 +595,7 @@ let html=`<div class="drug-name" style="color:var(--cyan)">${d.name}</div>
 <div style="font-size:11px;color:var(--purple);margin-bottom:6px">Indikation: ${d.ind}</div>
 <div class="drug-doses">
 <div class="dose-box"><div class="dose-value" style="color:var(--cyan)">${mg}</div><div class="dose-unit">${d.u}</div><div class="dose-label">Routine</div></div>
-${m!==null?`<div class="dose-box"><div class="dose-ml" style="background:var(--cyan-bg);color:var(--cyan)">${m} ml</div>${d.mlNote?`<div style="font-size:9px;color:var(--text2);margin-top:2px">${d.mlNote}</div>`:''}</div>`:''}
+${m!==null?`<div class="dose-box"><div class="dose-ml" style="background:var(--cyan-bg);color:var(--cyan)">${m} ml</div>${d.mlNote?`<div style="font-size:9px;color:#e5e7eb;margin-top:2px">${d.mlNote}</div>`:''}</div>`:''}
 </div>`;
 if(d.emerg){
 const emg=R(d.emerg*kg);const eml=d.mc?R((d.emerg*kg)/d.mc,2):null;
@@ -467,7 +616,7 @@ el.innerHTML=`<div class="section-title" style="color:var(--pink)">Sepsis — An
 SEPSIS.forEach(d=>{
 const card=h('div','drug-card');
 card.innerHTML=`<div class="drug-name" style="color:var(--pink)">${d.name}</div>
-<div style="font-size:13px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--text);margin-top:4px">${d.dose}</div>
+<div style="font-size:13px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;color:#ffffff;margin-top:4px">${d.dose}</div>
 ${d.notes?'<div class="drug-notes">'+d.notes+'</div>':''}`;
 el.appendChild(card);
 });
@@ -506,14 +655,14 @@ el.innerHTML=`
 <div class="warning-banner" style="font-size:13px;font-weight:700;text-align:center">HERZSTILLSTAND — ${kg} kg<br>inkl. Bradykardie &lt;60/min bei Hypoxie oder Kreislaufinstabilität</div>
 <div class="algo-box" style="border-color:var(--red);border-width:2px;text-align:center">
 <h4 style="color:var(--red)">5 Atemhübe, dann Kompression : Ventilation 15:2</h4>
-<p style="font-size:12px;color:var(--text2)">EKG / Defi anschließen → Rhythmusanalyse</p></div>
+<p style="font-size:12px;color:#e5e7eb">EKG / Defi anschließen → Rhythmusanalyse</p></div>
 <div class="algo-split">
 <div class="algo-branch" style="border-color:var(--red);background:var(--red-bg)">
 <h4 style="color:var(--red)">Schockbar</h4><p>Kammerflimmern/-flattern<br>Pulslose ventrikuläre Tachykardie</p>
-<div style="margin-top:8px;font-size:12px"><strong style="color:var(--red);font-size:18px">${j} J</strong><div style="color:var(--text2)">4 J/kg → ab 6. Schock bis ${jMax} J</div></div></div>
+<div style="margin-top:8px;font-size:12px"><strong style="color:var(--red);font-size:18px">${j} J</strong><div style="color:#e5e7eb">4 J/kg → ab 6. Schock bis ${jMax} J</div></div></div>
 <div class="algo-branch" style="border-color:#6b7280;background:var(--surface)">
 <h4>Nicht schockbar</h4><p>Asystolie<br>Pulslose elektrische Aktivität</p>
-<div style="margin-top:8px;font-size:12px"><strong style="color:var(--blue);font-size:16px">L-Adrenalin sofort</strong><div style="color:var(--text2)">${adr} mg = ${adrMl} ml</div></div></div></div>
+<div style="margin-top:8px;font-size:12px"><strong style="color:var(--blue);font-size:16px">L-Adrenalin sofort</strong><div style="color:#e5e7eb">${adr} mg = ${adrMl} ml</div></div></div></div>
 <div class="drug-card" style="border-color:rgba(239,68,68,0.3)">
 <div class="drug-name" style="color:var(--red)">L-Adrenalin</div>
 <div class="drug-conc">0,01 mg/kg = 0,1 ml/kg · Alle 4 Min. nach jeder 2. Rhythmuskontrolle</div>
@@ -546,7 +695,7 @@ else{act="PEWS alle 4h";actC="var(--green)";actBg="var(--green-bg)"}
 el.innerHTML=`<div class="section-title" style="color:var(--orange)">Modified Bedside PEWS</div>
 <div class="pews-total" style="border-color:${actC};background:${actBg}">
 <div class="total-num" style="color:${actC}">${total}</div>
-<div class="total-label" style="color:var(--text2)">Gesamtscore</div>
+<div class="total-label" style="color:#e5e7eb">Gesamtscore</div>
 <div class="total-action" style="color:${actC}">${act}</div></div>`;
 PEWS_CATS.forEach(cat=>{
 const div=h('div','pews-category');
@@ -567,7 +716,7 @@ render();
 });
 el.appendChild(div);
 });
-el.innerHTML+=`<div style="font-size:11px;color:var(--text2);text-align:center;margin-top:8px;line-height:1.4">
+el.innerHTML+=`<div style="font-size:11px;color:#e5e7eb;text-align:center;margin-top:8px;line-height:1.4">
 Bei kritisch kranken Patienten trotz gutem Score oder einem einzelnen Wert von 4 bitte Arzt verständigen.<br>
 Bei Score &lt; 4 PEWS alle 8h erheben.<br>Soeteman, M. et al. (2021), BMJ open, 11(5).</div>`;
 }
@@ -581,7 +730,7 @@ el.innerHTML+=`<div style="height:16px"></div>
 <div class="drug-card"><div class="drug-name" style="color:var(--red)">Notruf</div>
 <div style="font-size:12px;margin-top:6px;line-height:1.6"><strong>Im Zimmer:</strong> 1) Pflege Anwesend → 2) Arztruf<br><strong>Am Stützpunkt:</strong> Arztnotruf</div></div>
 <div style="height:12px"></div>
-<div style="font-size:10px;color:var(--text2);text-align:center;line-height:1.4">
+<div style="font-size:10px;color:#e5e7eb;text-align:center;line-height:1.4">
 Impressum: St. Anna Kinderspital: Station 1B, Anästhesie<br>
 Kontakt: Dr. Titieni-Schuhmann, Dr. Witt · Stand 12/2024<br>
 Quellen: ERC Guidelines (cprguidelines.eu); GRC (grc-org.de)</div>`;
