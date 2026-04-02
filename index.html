@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Notfallkarte">
+<meta name="theme-color" content="#0f1117">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-180.png">
+<title>Notfallkarte – St. Anna Kinderspital</title>
+<style>
+400;500;700&family=JetBrains+Mono:wght@500;700&display=swap');
+:root{--bg:#0f1117;--surface:#1a1d27;--surface2:#232736;--border:#2d3244;--text:#e8eaed;--text2:#9ca3af;--red:#ef4444;--red-bg:#2d1215;--green:#22c55e;--green-bg:#0d2818;--blue:#3b82f6;--blue-bg:#172554;--orange:#f59e0b;--orange-bg:#2d1f04;--purple:#a78bfa;--purple-bg:#1e1636;--cyan:#22d3ee;--cyan-bg:#0c2d33;--pink:#ec4899;--pink-bg:#2d1226}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);overscroll-behavior:none;overflow-x:hidden}
+.app{max-width:430px;margin:0 auto;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;background:var(--bg)}
+.header{position:sticky;top:0;z-index:100;background:rgba(15,17,23,0.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:12px 16px;padding-top:max(12px,env(safe-area-inset-top))}
+.header-top{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.header h1{font-size:17px;font-weight:700;letter-spacing:-0.3px;flex:1}
+.header-badge{font-size:10px;font-weight:700;padding:3px 8px;border-radius:6px;background:var(--red);color:white;letter-spacing:.5px;text-transform:uppercase}
+.back-btn{background:var(--surface2);border:none;color:var(--text);width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.weight-bar{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;padding:2px 0}
+.weight-bar::-webkit-scrollbar{display:none}
+.weight-chip{flex-shrink:0;padding:5px 10px;border-radius:8px;font-size:12px;font-weight:500;border:1px solid var(--border);background:transparent;color:var(--text2);cursor:pointer;transition:all .15s;white-space:nowrap;font-family:inherit}
+.weight-chip.active{background:var(--blue);border-color:var(--blue);color:white;font-weight:700}
+.custom-weight{display:flex;align-items:center;gap:6px;flex-shrink:0;margin-left:4px}
+.custom-weight input{width:52px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:5px 6px;font-size:13px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;text-align:center}
+.custom-weight span{font-size:12px;color:var(--text2)}
+.content{flex:1;padding:12px 16px 100px;overflow-y:auto}
+.home-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.home-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px 14px;cursor:pointer;transition:all .15s;display:flex;flex-direction:column;gap:8px}
+.home-card:active{transform:scale(0.97)}
+.home-card .icon-wrap{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px}
+.home-card h3{font-size:14px;font-weight:700;line-height:1.2}
+.home-card p{font-size:11px;color:var(--text2);line-height:1.3}
+.home-card.full-width{grid-column:1/-1}
+.home-card.prio-rot{border-left:3px solid var(--red)}
+.home-card.prio-orange{border-left:3px solid var(--orange)}
+.home-card.prio-gelb{border-left:3px solid #facc15}
+.home-card.prio-blau{border-left:3px solid var(--blue)}
+.prio-tag{font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px;letter-spacing:.3px;text-transform:uppercase;align-self:flex-start}
+.prio-tag.rot{background:var(--red-bg);color:var(--red)}
+.prio-tag.orange{background:var(--orange-bg);color:var(--orange)}
+.prio-tag.gelb{background:#2d2904;color:#facc15}
+.prio-tag.blau{background:var(--blue-bg);color:var(--blue)}
+.section-title{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text2);margin:20px 0 10px}
+.section-title:first-child{margin-top:4px}
+.drug-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:8px}
+.drug-name{font-size:14px;font-weight:700;margin-bottom:2px}
+.drug-conc{font-size:11px;color:var(--text2);margin-bottom:8px}
+.drug-doses{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:6px;align-items:center}
+.dose-box{display:flex;flex-direction:column;align-items:center;gap:2px}
+.dose-value{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:18px;font-weight:700}
+.dose-unit{font-size:11px;color:var(--text2)}
+.dose-label{font-size:10px;color:var(--text2)}
+.dose-ml{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:14px;font-weight:500;padding:4px 10px;border-radius:6px;margin-top:2px}
+.drug-notes{font-size:11px;color:var(--orange);margin-top:6px;line-height:1.4}
+.drug-route{display:inline-block;font-size:10px;font-weight:700;padding:2px 6px;border-radius:4px;margin-right:4px;background:var(--blue-bg);color:var(--blue)}
+.equip-row{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:8px}
+.equip-item{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 12px;text-align:center}
+.equip-item .label{font-size:10px;color:var(--text2);margin-bottom:2px}
+.equip-item .val{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:16px;font-weight:700}
+.algo-split{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
+.algo-branch{border-radius:12px;padding:12px;border:2px solid}
+.algo-branch h4{font-size:13px;font-weight:700;margin-bottom:4px}
+.algo-branch p{font-size:12px;line-height:1.4}
+.algo-box{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:8px}
+.algo-box h4{font-size:13px;font-weight:700;margin-bottom:6px}
+.algo-box ul{list-style:none;padding:0}
+.algo-box ul li{font-size:12px;line-height:1.6;padding-left:12px;position:relative}
+.algo-box ul li::before{content:'•';position:absolute;left:0;color:var(--text2)}
+.abcde-card{background:var(--surface);border-radius:14px;border:1px solid var(--border);margin-bottom:10px;overflow:hidden}
+.abcde-header{padding:12px 14px;display:flex;align-items:center;gap:10px;cursor:pointer}
+.abcde-letter{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:white;flex-shrink:0}
+.abcde-header h3{font-size:14px;font-weight:700;flex:1}
+.abcde-body{padding:0 14px 14px}
+.abcde-cols{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.abcde-col{background:var(--surface2);border-radius:8px;padding:10px}
+.abcde-col h5{font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--text2);margin-bottom:6px}
+.abcde-col li{font-size:12px;line-height:1.5;list-style:none;padding-left:10px;position:relative}
+.abcde-col li::before{content:'›';position:absolute;left:0;color:var(--text2)}
+.pews-category{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:8px}
+.pews-category h4{font-size:13px;font-weight:700;margin-bottom:8px}
+.pews-scores{display:flex;gap:4px}
+.pews-score-btn{flex:1;padding:8px 4px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--text);font-size:11px;cursor:pointer;text-align:center;transition:all .15s;font-family:'DM Sans',sans-serif}
+.pews-score-btn .score-num{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:14px;font-weight:700;display:block;margin-bottom:2px}
+.pews-score-btn.s0{border-color:#22c55e33}.pews-score-btn.s1{border-color:#f59e0b33}.pews-score-btn.s2{border-color:#f9731633}.pews-score-btn.s4{border-color:#ef444433}
+.pews-score-btn.active.s0{background:var(--green-bg);border-color:var(--green);color:var(--green)}
+.pews-score-btn.active.s1{background:var(--orange-bg);border-color:var(--orange);color:var(--orange)}
+.pews-score-btn.active.s2{background:#2d1606;border-color:#f97316;color:#f97316}
+.pews-score-btn.active.s4{background:var(--red-bg);border-color:var(--red);color:var(--red)}
+.pews-total{background:var(--surface);border:2px solid;border-radius:14px;padding:16px;text-align:center;margin:12px 0}
+.pews-total .total-num{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:42px;font-weight:700;line-height:1}
+.pews-total .total-label{font-size:12px;margin-top:4px}
+.pews-total .total-action{font-size:14px;font-weight:700;margin-top:8px}
+.phone-item{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;background:var(--surface);border:1px solid var(--border);border-radius:10px;margin-bottom:6px}
+.phone-item .name{font-size:13px;font-weight:500}
+.phone-item .number{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:16px;font-weight:700;color:var(--blue)}
+.tab-bar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:rgba(15,17,23,0.95);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid var(--border);display:flex;justify-content:space-around;padding:6px 0;padding-bottom:max(6px,env(safe-area-inset-bottom));z-index:100}
+.tab-btn{background:none;border:none;color:var(--text2);font-size:10px;font-family:'DM Sans',sans-serif;display:flex;flex-direction:column;align-items:center;gap:3px;padding:4px 8px;cursor:pointer;transition:color .15s;min-width:54px}
+.tab-btn.active{color:var(--blue)}
+.info-banner{background:var(--blue-bg);border:1px solid rgba(59,130,246,0.3);border-radius:10px;padding:10px 12px;font-size:11px;color:var(--blue);line-height:1.4;margin-bottom:12px}
+.warning-banner{background:var(--red-bg);border:1px solid rgba(239,68,68,0.3);border-radius:10px;padding:10px 12px;font-size:11px;color:var(--red);line-height:1.4;margin-bottom:12px;font-weight:500}
+.stufe-header{padding:10px 14px;border-radius:10px;margin-bottom:10px;font-size:14px;font-weight:700}
+.expand-chevron{transition:transform .2s;color:var(--text2);font-size:14px}
+.expand-chevron.open{transform:rotate(90deg)}
+.dose-sep{color:var(--text2);align-self:center;font-size:16px}
+</style>
+</head>
+<body>
+<div class="app" id="app"></div>
+<script>
+// ─── DATA ───
+const AGE_PRESETS=[{l:"NG",a:"Neugeboren",kg:3},{l:"3 Mon",a:"3 Monate",kg:5.5},{l:"1 J",a:"1 Jahr",kg:10},{l:"5 J",a:"5 Jahre",kg:20},{l:"9 J",a:"9 Jahre",kg:30},{l:"12 J",a:"12 Jahre",kg:40},{l:"14 J",a:"14 Jahre",kg:50},{l:"Erw.",a:"Erwachsen",kg:60}];
+
+const REANIMATION=[
+{name:"L-Adrenalin",conc:"0,1 mg/ml",amp:"1 Amp = 2 mg/20 ml",dkg:0.01,u:"mg",mc:0.1,notes:"Alle 4 Min. nach jeder 2. Rk",spr:kg=>kg<10?"5 ml Spritze":"10 ml Spritze"},
+{name:"Amiodaron",conc:"50 mg/ml",amp:"1 Amp = 150 mg/3 ml",dkg:5,u:"mg",mc:50,notes:"Max. 2 Gaben. 2. Gabe max. 150 mg",max:300},
+{name:"Lidocain (Xylocain 2%)",conc:"20 mg/ml",amp:"1 Amp = 200 mg/10 ml",dkg:1,u:"mg",mc:20,notes:"Alternative zu Amiodaron"},
+{name:"Defibrillation",dkg:4,u:"J",defi:true,notes:"Aufrunden! Ab 6. Schock steigern bis 8 J/kg (max. 360 J)"}
+];
+
+const INTUBATION=[
+{name:"Esketamin (Ketanest®)",conc:"5 mg/ml",amp:"1 Amp = 25 mg/5 ml",dkg:1,u:"mg",mc:5},
+{name:"Fentanyl",conc:"50 µg/ml",amp:"1 Amp = 100 µg/2 ml",dkg:3,u:"µg",mc:50,notes:"µg/kg!"},
+{name:"Midazolam (Dormicum®)",conc:"1 mg/ml",amp:"1 Amp = 5 mg/5 ml",dkg:0.2,u:"mg",mc:1},
+{name:"Rocuronium (Esmeron®)",conc:"10 mg/ml",amp:"1 Amp = 50 mg/5 ml",dkg:1,u:"mg",mc:10,notes:"RSI: 1 mg/kg"},
+{name:"Propofol 1%",conc:"10 mg/ml",amp:"",dkg:3,u:"mg",mc:10},
+{name:"Atropin",conc:"0,5 mg/ml",amp:"1 Amp = 0,5 mg/1 ml",dkg:0.02,u:"mg",mc:0.5,notes:"Bei vagaler Brady"}
+];
+
+function getEquip(kg){
+if(kg<=3)return{mc:"3,0",sp:"Ograde 1",lm:"1"};
+if(kg<=5.5)return{mc:"<2 J: 3,0-4,0",sp:"1/1",lm:"1,5"};
+if(kg<=10)return{mc:"4,0",sp:"1/1",lm:"1,5"};
+if(kg<=20)return{mc:"4,5",sp:"1,5-2",lm:"1,5-2"};
+if(kg<=30)return{mc:"5,0-5,5",sp:"2/2",lm:"2,5"};
+if(kg<=40)return{mc:"5,5-6",sp:"2,5-3",lm:"2,5-3"};
+if(kg<=50)return{mc:"6-6,5",sp:"3-4",lm:"3-4"};
+return{mc:"7-8,5",sp:"4/3",lm:"4"};
+}
+
+const ANAPHYLAXIS=[
+{name:"Adrenalin (Suprarenin®)",conc:"1 mg/ml → 1:10.000",amp:"",dkg:0.01,u:"mg",mc:0.1,notes:"i.m.! 1:10.000 verdünnen",route:"i.m."},
+{name:"Prednisolon (Prednisolut®)",conc:"25 mg/ml",amp:"1 Amp = 250 mg/5 ml",dkg:2,u:"mg",mc:25,notes:"i.v.",route:"i.v."},
+{name:"Diphenhydramin (Dibondrin®)",conc:"15 mg/ml",amp:"1 Amp = 30 mg/2 ml",dkg:1,u:"mg",mc:15,notes:"i.v. langsam",route:"i.v."},
+{name:"Sultanol® Inhalation",conc:"",amp:"",dkg:0,u:"",notes:"NG: 2,5 ml Supra+2,5 ml Aqua → 6 Hübe. Sonst 5 ml pur → 10 Hübe",inhal:true},
+{name:"Volumen",conc:"Isotone Vollelektrolytlösung",amp:"",dkg:0,u:"",notes:"15-20 ml/kg/d. Bolusgabe: 10 ml/kg i.v.",vol:true}
+];
+
+const SVT=[
+{name:"Adenosin",conc:"3 mg/ml, 1 Amp = 6 mg/2 ml",dkg:0.1,u:"mg",mc:3,max:6,d2kg:0.2,d2max:12,notes:"Zugabe: Boluspritze & nachspülen. CAVE: Reanimationsbereitschaft!"},
+{name:"Propafenon (Rytmonorm®)",conc:"3,5 mg/ml, 1 Amp = 70 mg/20 ml",dkg:0.5,u:"mg",mc:3.5,notes:"0,3-0,6 mg/kg i.v. > 5 min. Wdh. n. 30 min. → SYNC!"},
+{name:"Synchronisierte Kardioversion",conc:"",dkg:1,u:"J",defi:true,notes:"1. Wahl: 1 J/kg. 2. Wahl: 2 J/kg"}
+];
+
+const SEIZURE1=[
+{name:"Midazolam oral (Buccolam®)",conc:"1 mg/ml",route:"Buccal/nasal",dkg:0.3,u:"mg",mc:1,max:10,notes:"Buccal/nasal (Infusionsspr.): 0,3 mg/kg (max. 10 mg)"},
+{name:"Midazolam i.v.",conc:"1 mg/ml, 1 Amp = 5 mg/5 ml",route:"i.v.",dkg:0.1,u:"mg",mc:1,max:10,notes:"0,1-0,15 mg/kg i.v. (max. 10 mg)"},
+{name:"Diazepam Rectiole (Stesolid®)",conc:"Rectiole",route:"Rectal",dkg:0,u:"mg",notes:"NG: ½ Rect. à 5 mg. <15 kg: 5 mg rect. >15 kg: 10 mg rect.",fixed:true},
+{name:"Lorazepam",conc:"4 mg/ml, 1 Amp = 4 mg/1 ml",route:"i.v.",dkg:0.1,u:"mg",mc:4,max:4,notes:"0,1 mg/kg (max. 4 mg)"}
+];
+
+const SEIZURE2=[
+{name:"Levetiracetam (Keppra®)",conc:"100 mg/ml, 1 Amp = 500 mg/5 ml",dkg:50,u:"mg",mc:100,max:4500,notes:"40-60 mg/kg (max. 4500 mg) ad 100 ml NaCl 0,9% > 15 min"},
+{name:"Valproat (Convulex®)",conc:"100 mg/ml, 1 Amp = 500 mg/5 ml",dkg:40,u:"mg",mc:100,max:3000,notes:"40 mg/kg (max. 3000 mg) > 15 min. CAVE HWZ < Wo+WZ"},
+{name:"Phenytoin (Epanutin®)",conc:"50 mg/ml, 1 Amp = 250 mg/5 ml",dkg:20,u:"mg",mc:50,max:1500,notes:"20 mg/kg (max. 1500 mg) > 20 min"}
+];
+
+const ANTAGONISTS=[
+{name:"Naloxon (Narcanti®)",conc:"0,4 mg/ml",dkg:0.01,u:"mg",mc:0.04,ind:"Opioide",notes:"Verd. 1 Amp ad 10 ml NaCl 0,9% → 0,04 mg/ml. Titrieren",mlNote:"(verdünnt)"},
+{name:"Flumazenil (Anexate®)",conc:"0,1 mg/ml",dkg:0.01,u:"mg",mc:0.1,ind:"Benzodiazepine",notes:"0,01 mg/kg"},
+{name:"Biperiden (Akineton®)",conc:"5 mg/ml, 1 Amp = 5 mg/1 ml",dkg:0.05,u:"mg",mc:5,ind:"EPMS",notes:"0,05-0,1 mg/kg"},
+{name:"Sugammadex (Bridion®)",conc:"100 mg/ml, 1 Amp = 200 mg/2 ml",dkg:2,u:"mg",mc:100,ind:"Rocuronium",notes:"Routine: 2-4 mg/kg. NOTFALL (CICO): 16 mg/kg!",emerg:16}
+];
+
+const SEPSIS=[
+{name:"Adrenalin-BP (Suprarenin®)",dose:"0,3 mg × kg",notes:"in 50 ml G5%"},
+{name:"Noradrenalin-BP (Arterenol®)",dose:"0,3 mg × kg",notes:"in 50 ml G5%"},
+{name:"Liposomales Amphotericin B",dose:"3–5 mg/kg/d",notes:"Start 1 mg/kg"},
+{name:"Caspofungin (Cancidas)",dose:"Tag 1: 70 mg/m² KOF, ab Tag 2: 50 mg/m²",notes:""},
+{name:"Teicoplanin",dose:"Start 3 × 10 mg/kg/d, dann 10 mg/kg ED",notes:""},
+{name:"Piperacillin-Tazobactam",dose:"240-300 mg/kg/d in 3-4 EG (60 min)",notes:""},
+{name:"Meropenem",dose:"60 mg/kg/d in 3 EG (30 min)",notes:"Meningitis max. 3 g/d"},
+{name:"Gentamicin (Refobacin)",dose:"250 mg/kg/d in 1 EG",notes:""},
+{name:"Ceftriaxon (Rocephin)",dose:"75–100 mg/kg/d in 1 EG",notes:""},
+{name:"Cefotaxim",dose:"150 mg/kg/d in 3 EG",notes:""},
+{name:"Ampicillin (Standacillin)",dose:"150 mg/kg/d in 3 EG (30 min)",notes:""},
+{name:"Amikacin",dose:"15-20 mg/kg/d in 1 EG (30 min)",notes:""}
+];
+
+const PHONES=[
+{n:"Hauptdienst",t:"9001"},{n:"Intensivdienst",t:"9002"},{n:"Onko-Dienst",t:"9003"},
+{n:"Beidienst",t:"9004"},{n:"Assistent*in 1",t:"9005"},{n:"Assistent*in 2",t:"9006"},
+{n:"Portier",t:"1211"},{n:"Intensivstation",t:"3150"}
+];
+
+const ABCDE=[
+{l:"A",t:"Airway — Atemwege",c:"#ef4444",
+a:["Fremdkörper","Ödem","Kopfposition","Geräusche"],
+m:["Atemwege öffnen","Absaugen","Lagern / Esmarch-Handgriff","Atemwege sichern / Guedeltubus","Larynxmaske / Tubus"]},
+{l:"B",t:"Breathing — Atmung",c:"#f59e0b",
+a:["Atemfrequenz / Atemtiefe","Atemarbeit (Stöhnen, Einziehungen)","Oxygenierung (Zyanose SpO₂)","Bildgebung (Röntgen/Sono)"],
+m:["Sauerstoffgabe + PEEP","Maskenbeatmung (2 Helfer)","High-Flow / NIV","Pneumothorax drainieren","Inhalation / Lagerung"]},
+{l:"C",t:"Circulation — Kreislauf",c:"#22c55e",
+a:["Blutdruck","Herzfrequenz, Pulsstärke","Rekap-Zeit","Vorlast (Halsvenen, Lebergröße)","Diurese","Laktat"],
+m:["i.v./i.o. Zugang","Flüssigkeitsboli (Isoton) à 10 ml/kg","Massenblutung: primär Transfusion","Frühzeitig Katecholamine","Behandlung Arrhythmie / Kardioversion"]},
+{l:"D",t:"Disability — Neurologie",c:"#3b82f6",
+a:["Alert / Verbal / Pain / Unresponsive","Pupillenreaktion","Blutzucker","Neurostatus / Krampfanfall / Tonus","Toxikologie"],
+m:["Glucose bei Hypoglykämie","Antidote bei Intoxikation","Bildgebung bei akuter Neurologie","Benzodiazepine bei Krampfanfall"]},
+{l:"E",t:"Exposure — Umgebung",c:"#a78bfa",
+a:["Untersuchung","Allergien","Medikation","Patienten-Krankengeschichte","Letzte Mahlzeit","Environment"],
+m:["Ursachenbekämpfung","Wärmeerhalt","Antidote"]}
+];
+
+const PEWS_CATS=[
+{k:"spo2",n:"SpO₂ / O₂-Therapie",o:[{s:0,l:"> 94%\nRaumluft"},{s:1,l:"91-94%\n0-2L O₂"},{s:2,l:"≤ 90%\n2L O₂"},{s:4,l:"≤ 80%\nHigh Flow"}]},
+{k:"hr",n:"Herzfrequenz",o:[{s:0,l:"Normal"},{s:1,l:"Leicht ↑/↓"},{s:2,l:"Erhöht ↑/↓"},{s:4,l:"Stark ↑/↓"}]},
+{k:"temp",n:"Temperatur",o:[{s:0,l:"36,5-37,5"},{s:1,l:"≥ 37,6\n≤ 36,4"},{s:2,l:"≥ 38,5"},{s:4,l:"≥ 40"}]},
+{k:"rr",n:"Atemfrequenz",o:[{s:0,l:"Normal"},{s:1,l:"Leicht ↑/↓"},{s:2,l:"Erhöht ↑/↓"},{s:4,l:"Stark ↑/↓"}]},
+{k:"eff",n:"Atemanstrengung",o:[{s:0,l:"Normal"},{s:1,l:"Leicht\nerhöht"},{s:2,l:"Erhöht"},{s:4,l:"Stark\nerhöht"}]},
+{k:"bp",n:"Syst. Blutdruck",o:[{s:0,l:"Normal"},{s:1,l:"Leicht ↑/↓"},{s:2,l:"Erhöht ↑/↓"},{s:4,l:"Stark ↑/↓"}]},
+{k:"cap",n:"Rekap-Zeit",o:[{s:0,l:"1-3 sek"},{s:1,l:"≥ 3 sek"},{s:2,l:"≥ 4 sek"},{s:4,l:"> 30 sek\n≤ 0,5 sek"}]}
+];
+
+// ─── UTILS ───
+function R(n,d){
+if(d!==undefined){const f=Math.pow(10,d);return Math.round(n*f)/f}
+if(Math.abs(n)<0.01)return Math.round(n*1000)/1000;
+if(Math.abs(n)<0.1)return Math.round(n*100)/100;
+if(Math.abs(n)<1)return Math.round(n*100)/100;
+if(Math.abs(n)<10)return Math.round(n*10)/10;
+return Math.round(n);
+}
+function h(tag,cls,html,attrs){
+const e=document.createElement(tag);
+if(cls)e.className=cls;
+if(html!==undefined&&html!==null)e.innerHTML=html;
+if(attrs)Object.entries(attrs).forEach(([k,v])=>{
+if(k==='style'&&typeof v==='object')Object.assign(e.style,v);
+else if(k.startsWith('on'))e.addEventListener(k.slice(2).toLowerCase(),v);
+else e.setAttribute(k,v);
+});
+return e;
+}
+
+// ─── STATE ───
+let state={page:'home',weight:10,preset:2,pewsScores:{},abcdeOpen:{A:true}};
+
+function dose(d,kg){
+let mg=R(d.dkg*kg);
+if(d.max)mg=R(Math.min(d.dkg*kg,d.max));
+return mg;
+}
+function ml(d,kg){
+if(!d.mc)return null;
+let mg=d.dkg*kg;
+if(d.max)mg=Math.min(mg,d.max);
+return R(mg/d.mc,2);
+}
+
+// ─── SVG ICONS ───
+const ICO={
+home:'<svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>',
+heart:'<svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0016.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 002 8.5c0 2.3 1.5 4.05 3 5.5l7 7z"/></svg>',
+clip:'<svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>',
+phone:'<svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>',
+back:'<svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>',
+zap:'<svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>',
+alert:'<svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>',
+shield:'<svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>',
+syringe:'<svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 2l4 4M7.5 20.5L2 22l1.5-5.5"/><path d="M15 4l-8.5 8.5a2.12 2.12 0 000 3l2 2a2.12 2.12 0 003 0L20 9"/></svg>'
+};
+
+// ─── DRUG CARD BUILDER ───
+function drugCard(d,kg,color){
+const c=h('div','drug-card');
+if(d.defi){
+const j1=Math.ceil(d.dkg*kg);
+c.innerHTML=`<div class="drug-name" style="color:${color}">${d.name}</div>
+<div class="drug-doses" style="margin-top:8px">
+<div class="dose-box"><div class="dose-value" style="color:${color}">${j1}</div><div class="dose-unit">J (${d.dkg} J/kg)</div></div>
+${d.u==='J'&&d.notes&&d.notes.includes('2. Wahl')?`<div class="dose-sep">→</div><div class="dose-box"><div class="dose-value" style="color:var(--red)">${Math.ceil(2*kg)}</div><div class="dose-unit">J (2. Wahl)</div></div>`
+:`<div class="dose-sep">→</div><div class="dose-box"><div class="dose-value" style="color:var(--red)">${Math.min(Math.ceil(8*kg),360)}</div><div class="dose-unit">max J</div></div>`}
+</div>`;
+if(d.notes)c.innerHTML+=`<div class="drug-notes">${d.notes}</div>`;
+return c;
+}
+if(d.inhal||d.vol){
+c.innerHTML=`<div class="drug-name" style="color:${color}">${d.name}</div>
+<div class="drug-conc">${d.conc}</div>
+<div class="drug-notes">${d.notes}</div>`;
+return c;
+}
+const mg=dose(d,kg);
+const m=ml(d,kg);
+let doses=`<div class="dose-box"><div class="dose-value" style="color:${color}">${mg}</div><div class="dose-unit">${d.u}</div></div>`;
+if(m!==null)doses+=`<div class="dose-box"><div class="dose-ml" style="background:${color}15;color:${color}">${m} ml</div></div>`;
+if(d.spr)doses+=`<div class="dose-box" style="justify-content:center"><div style="font-size:11px;color:var(--text2)">${d.spr(kg)}</div></div>`;
+let extra='';
+if(d.route)extra=`<span class="drug-route" style="margin-left:6px">${d.route}</span>`;
+c.innerHTML=`<div class="drug-name" style="color:${color}">${d.name}</div>
+<div class="drug-conc">${d.conc||''}${d.amp?' · '+d.amp:''}${extra}</div>
+<div class="drug-doses">${doses}</div>
+${d.notes?'<div class="drug-notes">'+d.notes+'</div>':''}`;
+return c;
+}
+
+// ─── PAGE RENDERERS ───
+function renderHome(el){
+el.innerHTML=`<div class="warning-banner">St. Anna Kinderspital · Notfallkarte · Stand 12/2024<br>Quellen: ERC Guidelines, GRC. Alle Angaben ohne Gewähr.</div><div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px"><span class="prio-tag rot">● Vital</span><span class="prio-tag orange">● Dringlich</span><span class="prio-tag gelb">● Reevaluieren</span><span class="prio-tag blau">● Support</span></div><div class="home-grid" id="hgrid"></div>`;
+const grid=el.querySelector('#hgrid');
+const cards=[
+{id:'reanimation',t:'Reanimation',d:'CPR-Medikamente',ico:ICO.heart,c:'var(--red)',bg:'var(--red-bg)',prio:'rot',pl:'Vital'},
+{id:'intubation',t:'Intubation',d:'Narkose & Atemweg',ico:ICO.shield,c:'var(--orange)',bg:'var(--orange-bg)',prio:'orange',pl:'Dringlich'},
+{id:'seizure',t:'Krampfanfall',d:'Stufe 1 & 2 Therapie',ico:ICO.zap,c:'var(--red)',bg:'var(--red-bg)',prio:'rot',pl:'Vital'},
+{id:'anaphylaxis',t:'Anaphylaxie',d:'Notfalltherapie',ico:ICO.alert,c:'var(--red)',bg:'var(--red-bg)',prio:'rot',pl:'Vital'},
+{id:'svt',t:'SVT',d:'Supraventrikuläre Tachykardie',ico:ICO.heart,c:'var(--orange)',bg:'var(--orange-bg)',prio:'orange',pl:'Dringlich'},
+{id:'antagonists',t:'Antagonisierung',d:'Naloxon, Flumazenil...',ico:ICO.syringe,c:'var(--blue)',bg:'var(--blue-bg)',prio:'blau',pl:'Support'},
+{id:'sepsis',t:'Sepsis',d:'Antibiotika-Dosierung',ico:ICO.alert,c:'var(--orange)',bg:'var(--orange-bg)',prio:'orange',pl:'Dringlich'},
+{id:'abcde',t:'ABCDE',d:'Strukturierte Erstbeurteilung',ico:ICO.clip,c:'#facc15',bg:'#2d2904',prio:'gelb',pl:'Reevaluieren'},
+{id:'herzstillstand',t:'Herzstillstand',d:'CPR-Algorithmus',ico:ICO.heart,c:'var(--red)',bg:'var(--red-bg)',prio:'rot',pl:'Vital',full:true}
+];
+cards.forEach(c=>{
+const card=h('div','home-card'+(c.full?' full-width':'')+' prio-'+c.prio);
+card.innerHTML=`<div class="icon-wrap" style="background:${c.bg};color:${c.c}">${c.ico}</div><h3>${c.t}</h3><p>${c.d}</p><span class="prio-tag ${c.prio}">${c.pl}</span>`;
+card.onclick=()=>{state.page=c.id;render()};
+grid.appendChild(card);
+});
+}
+
+function renderReanimation(el){
+const kg=state.weight;
+el.innerHTML=`<div class="section-title" style="color:var(--red)">Reanimation Medikamente</div><div class="info-banner">Dosis berechnet für <strong>${kg} kg</strong></div>`;
+REANIMATION.forEach(d=>el.appendChild(drugCard(d,kg,'var(--red)')));
+}
+
+function renderIntubation(el){
+const kg=state.weight;const eq=getEquip(kg);
+el.innerHTML=`<div class="section-title" style="color:var(--green)">Atemwegsequipment</div>
+<div class="equip-row">
+<div class="equip-item"><div class="label">Tubus – Mikrocuff</div><div class="val" style="color:var(--green)">${eq.mc}</div></div>
+<div class="equip-item"><div class="label">Larynxmaske Größe</div><div class="val" style="color:var(--green)">${eq.lm}</div></div>
+<div class="equip-item" style="grid-column:1/-1"><div class="label">Maske/Laryngoskop – Spatel</div><div class="val">${eq.sp}</div></div>
+</div>
+<div style="font-size:11px;color:var(--text2);margin-bottom:12px">&gt;2 J: Alter/4 + 3,5 (gecufft) bzw. Alter/4 + 4 (ungecufft)</div>
+<div class="section-title" style="color:var(--green)">Intubationsmedikamente</div>
+<div class="info-banner">Dosis berechnet für <strong>${kg} kg</strong></div>`;
+INTUBATION.forEach(d=>el.appendChild(drugCard(d,kg,'var(--green)')));
+}
+
+function renderSeizure(el){
+const kg=state.weight;
+el.innerHTML=`<div class="stufe-header" style="background:var(--blue-bg);color:var(--blue);border:1px solid rgba(59,130,246,0.3)">Stufe 1 — Minute 5 und 10</div>
+<div class="info-banner">Benzodiazepine (nach Wahl): buccal/nasal/rectal/i.v. — falls nicht wirksam: erneute Gabe → Stufe 2</div>`;
+SEIZURE1.forEach(d=>{
+const card=h('div','drug-card');
+if(d.fixed){
+const fixedDose=kg<15?5:10;
+const fixedLabel=kg<3?"½ Rect. à 5 mg":(kg<15?"5 mg rect. (1 Rect.)":"10 mg rect. (1 Rect.)");
+card.innerHTML=`<div class="drug-name" style="color:var(--blue)">${d.name}</div>
+<div class="drug-conc">${d.conc}<span class="drug-route" style="margin-left:6px">${d.route}</span></div>
+<div class="drug-doses" style="margin-top:8px"><div class="dose-box"><div class="dose-value" style="color:var(--blue)">${fixedDose}</div><div class="dose-unit">mg</div></div>
+<div class="dose-box" style="justify-content:center"><div style="font-size:11px;color:var(--blue);font-weight:600">${fixedLabel}</div></div></div>
+<div class="drug-notes">${d.notes}</div>`;
+}else{
+const mg=dose(d,kg);const m=ml(d,kg);
+card.innerHTML=`<div class="drug-name" style="color:var(--blue)">${d.name}</div>
+<div class="drug-conc">${d.conc}<span class="drug-route" style="margin-left:6px">${d.route}</span></div>
+<div class="drug-doses" style="margin-top:8px"><div class="dose-box"><div class="dose-value" style="color:var(--blue)">${mg}</div><div class="dose-unit">${d.u}</div></div>
+${m!==null?`<div class="dose-box"><div class="dose-ml" style="background:var(--blue-bg);color:var(--blue)">${m} ml</div></div>`:''}</div>
+<div class="drug-notes">${d.notes}</div>`;
+}
+el.appendChild(card);
+});
+el.innerHTML+=`<div style="height:16px"></div>
+<div class="stufe-header" style="background:var(--purple-bg);color:var(--purple);border:1px solid rgba(167,139,250,0.3)">Stufe 2 — Minute 20</div>
+<div class="warning-banner">Falls Stufe 1 nicht erfolgreich → Min 30: Verlegung Intensivstation, Intubation und Midazolam-DTI</div>`;
+SEIZURE2.forEach(d=>{
+const mg=dose(d,kg);const m=ml(d,kg);
+const card=h('div','drug-card');
+card.innerHTML=`<div class="drug-name" style="color:var(--purple)">${d.name}</div>
+<div class="drug-conc">${d.conc}</div>
+<div class="drug-doses" style="margin-top:4px"><div class="dose-box"><div class="dose-value" style="color:var(--purple)">${mg}</div><div class="dose-unit">${d.u}</div></div>
+${m!==null?`<div class="dose-box"><div class="dose-ml" style="background:var(--purple-bg);color:var(--purple)">${m} ml</div></div>`:''}</div>
+<div class="drug-notes">${d.notes}</div>`;
+el.appendChild(card);
+});
+}
+
+function renderAnaphylaxis(el){
+const kg=state.weight;
+el.innerHTML=`<div class="section-title" style="color:var(--orange)">Anaphylaxie</div><div class="info-banner">Dosis berechnet für <strong>${kg} kg</strong></div>`;
+ANAPHYLAXIS.forEach(d=>el.appendChild(drugCard(d,kg,'var(--orange)')));
+}
+
+function renderSVT(el){
+const kg=state.weight;
+el.innerHTML=`<div class="section-title" style="color:var(--purple)">Supraventrikuläre Tachykardie</div><div class="info-banner">Dosis berechnet für <strong>${kg} kg</strong></div>`;
+SVT.forEach(d=>{
+if(d.defi){el.appendChild(drugCard(d,kg,'var(--purple)'));return;}
+const card=h('div','drug-card');
+const mg1=dose(d,kg);const m1=ml(d,kg);
+let html=`<div class="drug-name" style="color:var(--purple)">${d.name}</div><div class="drug-conc">${d.conc}</div>
+<div class="drug-doses" style="margin-top:4px">
+<div class="dose-box"><div class="dose-value" style="color:var(--purple)">${mg1}</div><div class="dose-unit">${d.u}</div><div class="dose-label">1. Gabe</div></div>
+${m1!==null?`<div class="dose-box"><div class="dose-ml" style="background:var(--purple-bg);color:var(--purple)">${m1} ml</div></div>`:''}`;
+if(d.d2kg){
+const mg2=R(Math.min(d.d2kg*kg,d.d2max));const m2=R(Math.min(d.d2kg*kg,d.d2max)/d.mc,2);
+html+=`<div style="color:var(--text2);align-self:center;font-size:12px">2. Gabe:</div>
+<div class="dose-box"><div class="dose-value" style="color:var(--purple)">${mg2}</div><div class="dose-unit">${d.u}</div></div>
+<div class="dose-box"><div class="dose-ml" style="background:var(--purple-bg);color:var(--purple)">${m2} ml</div></div>`;
+}
+html+=`</div><div class="drug-notes">${d.notes}</div>`;
+card.innerHTML=html;
+el.appendChild(card);
+});
+}
+
+function renderAntagonists(el){
+const kg=state.weight;
+el.innerHTML=`<div class="section-title" style="color:var(--cyan)">Antagonisierung</div><div class="info-banner">Dosis berechnet für <strong>${kg} kg</strong></div>`;
+ANTAGONISTS.forEach(d=>{
+const card=h('div','drug-card');
+const mg=R(d.dkg*kg,2);const m=d.mc?R((d.dkg*kg)/d.mc,2):null;
+let html=`<div class="drug-name" style="color:var(--cyan)">${d.name}</div>
+<div class="drug-conc">${d.conc}</div>
+<div style="font-size:11px;color:var(--purple);margin-bottom:6px">Indikation: ${d.ind}</div>
+<div class="drug-doses">
+<div class="dose-box"><div class="dose-value" style="color:var(--cyan)">${mg}</div><div class="dose-unit">${d.u}</div><div class="dose-label">Routine</div></div>
+${m!==null?`<div class="dose-box"><div class="dose-ml" style="background:var(--cyan-bg);color:var(--cyan)">${m} ml</div>${d.mlNote?`<div style="font-size:9px;color:var(--text2);margin-top:2px">${d.mlNote}</div>`:''}</div>`:''}
+</div>`;
+if(d.emerg){
+const emg=R(d.emerg*kg);const eml=d.mc?R((d.emerg*kg)/d.mc,2):null;
+html+=`<div class="drug-doses" style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border)">
+<div class="dose-box"><div class="dose-value" style="color:var(--red)">${emg}</div><div class="dose-unit">${d.u}</div><div class="dose-label" style="color:var(--red)">NOTFALL (CICO)</div></div>
+${eml!==null?`<div class="dose-box"><div class="dose-ml" style="background:var(--red-bg);color:var(--red)">${eml} ml</div><div style="font-size:9px;color:var(--red)">16 mg/kg</div></div>`:''}
+</div>`;
+}
+html+=`<div class="drug-notes">${d.notes}</div>`;
+card.innerHTML=html;
+el.appendChild(card);
+});
+}
+
+function renderSepsis(el){
+el.innerHTML=`<div class="section-title" style="color:var(--pink)">Sepsis — Antibiotika</div>
+<div class="info-banner">AWMF-Leitlinie 048-014, S2k. Dosierungen gewichtsabhängig.</div>`;
+SEPSIS.forEach(d=>{
+const card=h('div','drug-card');
+card.innerHTML=`<div class="drug-name" style="color:var(--pink)">${d.name}</div>
+<div style="font-size:13px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--text);margin-top:4px">${d.dose}</div>
+${d.notes?'<div class="drug-notes">'+d.notes+'</div>':''}`;
+el.appendChild(card);
+});
+}
+
+function renderABCDE(el){
+el.innerHTML=`<div class="section-title" style="color:var(--orange)">ABCDE-Schema</div>`;
+ABCDE.forEach(item=>{
+const card=h('div','abcde-card');
+const isOpen=state.abcdeOpen[item.l];
+let html=`<div class="abcde-header" data-letter="${item.l}">
+<div class="abcde-letter" style="background:${item.c}">${item.l}</div>
+<h3>${item.t}</h3>
+<span class="expand-chevron ${isOpen?'open':''}">▶</span></div>`;
+if(isOpen){
+html+=`<div class="abcde-body"><div class="abcde-cols">
+<div class="abcde-col"><h5>Beurteilung</h5><ul>${item.a.map(x=>'<li>'+x+'</li>').join('')}</ul></div>
+<div class="abcde-col"><h5>Maßnahmen</h5><ul>${item.m.map(x=>'<li>'+x+'</li>').join('')}</ul></div>
+</div></div>`;
+}
+card.innerHTML=html;
+card.querySelector('.abcde-header').onclick=()=>{
+state.abcdeOpen[item.l]=!state.abcdeOpen[item.l];
+render();
+};
+el.appendChild(card);
+});
+}
+
+function renderHerzstillstand(el){
+const kg=state.weight;
+const adr=R(0.01*kg,2);const adrMl=R(adr/0.1,2);
+const j=Math.ceil(4*kg);const jMax=Math.min(Math.ceil(8*kg),360);
+const amio=Math.min(R(5*kg),300);
+el.innerHTML=`
+<div class="warning-banner" style="font-size:13px;font-weight:700;text-align:center">HERZSTILLSTAND — ${kg} kg<br>inkl. Bradykardie &lt;60/min bei Hypoxie oder Kreislaufinstabilität</div>
+<div class="algo-box" style="border-color:var(--red);border-width:2px;text-align:center">
+<h4 style="color:var(--red)">5 Atemhübe, dann Kompression : Ventilation 15:2</h4>
+<p style="font-size:12px;color:var(--text2)">EKG / Defi anschließen → Rhythmusanalyse</p></div>
+<div class="algo-split">
+<div class="algo-branch" style="border-color:var(--red);background:var(--red-bg)">
+<h4 style="color:var(--red)">Schockbar</h4><p>Kammerflimmern/-flattern<br>Pulslose ventrikuläre Tachykardie</p>
+<div style="margin-top:8px;font-size:12px"><strong style="color:var(--red);font-size:18px">${j} J</strong><div style="color:var(--text2)">4 J/kg → ab 6. Schock bis ${jMax} J</div></div></div>
+<div class="algo-branch" style="border-color:#6b7280;background:var(--surface)">
+<h4>Nicht schockbar</h4><p>Asystolie<br>Pulslose elektrische Aktivität</p>
+<div style="margin-top:8px;font-size:12px"><strong style="color:var(--blue);font-size:16px">L-Adrenalin sofort</strong><div style="color:var(--text2)">${adr} mg = ${adrMl} ml</div></div></div></div>
+<div class="drug-card" style="border-color:rgba(239,68,68,0.3)">
+<div class="drug-name" style="color:var(--red)">L-Adrenalin</div>
+<div class="drug-conc">0,01 mg/kg = 0,1 ml/kg · Alle 4 Min. nach jeder 2. Rhythmuskontrolle</div>
+<div class="drug-doses" style="margin-top:6px">
+<div class="dose-box"><div class="dose-value" style="color:var(--red)">${adr}</div><div class="dose-unit">mg</div></div>
+<div class="dose-box"><div class="dose-ml" style="background:var(--red-bg);color:var(--red)">${adrMl} ml</div></div></div>
+<div class="drug-notes">Schockbar: nach dem 3. Schock, dann alle 4 Min.</div></div>
+<div class="drug-card" style="border-color:rgba(59,130,246,0.3)">
+<div class="drug-name" style="color:var(--blue)">Amiodaron</div>
+<div class="drug-conc">5 mg/kg · Max. 2 Gaben (2. Gabe max. 150 mg)</div>
+<div class="drug-doses" style="margin-top:6px">
+<div class="dose-box"><div class="dose-value" style="color:var(--blue)">${amio}</div><div class="dose-unit">mg</div></div>
+<div class="dose-box"><div class="dose-ml" style="background:var(--blue-bg);color:var(--blue)">${R(amio/50,2)} ml</div></div></div>
+<div class="drug-notes">Alternative: Lidocain 1 mg/kg = 0,05 ml/kg → ${R(kg)} mg</div></div>
+<div class="algo-box"><h4 style="color:var(--red)">Keine Unterbrechungen!</h4><p style="font-size:12px;line-height:1.5">CPR 2 min → Rhythmuskontrolle → weiter</p></div>
+<div class="algo-split">
+<div class="algo-box"><h4>Reversible Ursachen</h4><ul><li>Hypoxämie</li><li>Hypovolämie</li><li>Hypo-/Hyper K⁺/Ca²⁺/Mg/Gluc</li><li>Hypo-/Hyperthermie</li><li>Herzbeuteltamponade</li><li>Intoxikation</li><li>Thromboembolie</li><li>Spannungspneumothorax</li></ul></div>
+<div class="algo-box"><h4>Quality CPR</h4><ul><li>Rea-Brett</li><li>100-120 /Min.</li><li>1/3 Thoraxtiefe</li><li>Thorax vollständig entlasten</li><li>Wechsel HDM alle 2 Min.</li><li>100% O₂</li></ul></div></div>`;
+}
+
+function renderPEWS(el){
+const scores=state.pewsScores;
+const total=Object.values(scores).reduce((a,b)=>a+b,0);
+let act,actC,actBg;
+if(total>=10){act="INTENSIV VERSTÄNDIGEN";actC="#7f1d1d";actBg="#451a1a"}
+else if(total>=8){act="INTENSIV VERSTÄNDIGEN";actC="var(--red)";actBg="var(--red-bg)"}
+else if(total>=6){act="ARZT SOFORT VERSTÄNDIGEN";actC="var(--red)";actBg="var(--red-bg)"}
+else if(total>=4){act="PEWS stündlich";actC="var(--orange)";actBg="var(--orange-bg)"}
+else{act="PEWS alle 4h";actC="var(--green)";actBg="var(--green-bg)"}
+el.innerHTML=`<div class="section-title" style="color:var(--orange)">Modified Bedside PEWS</div>
+<div class="pews-total" style="border-color:${actC};background:${actBg}">
+<div class="total-num" style="color:${actC}">${total}</div>
+<div class="total-label" style="color:var(--text2)">Gesamtscore</div>
+<div class="total-action" style="color:${actC}">${act}</div></div>`;
+PEWS_CATS.forEach(cat=>{
+const div=h('div','pews-category');
+let btns='';
+cat.o.forEach(opt=>{
+const active=scores[cat.k]===opt.s;
+btns+=`<button class="pews-score-btn s${opt.s} ${active?'active':''}" data-cat="${cat.k}" data-score="${opt.s}">
+<span class="score-num">${opt.s}</span><span style="white-space:pre-line">${opt.l}</span></button>`;
+});
+div.innerHTML=`<h4>${cat.n}</h4><div class="pews-scores">${btns}</div>`;
+div.querySelectorAll('.pews-score-btn').forEach(btn=>{
+btn.onclick=()=>{
+const k=btn.dataset.cat;const s=parseInt(btn.dataset.score);
+if(scores[k]===s)delete state.pewsScores[k];
+else state.pewsScores[k]=s;
+render();
+};
+});
+el.appendChild(div);
+});
+el.innerHTML+=`<div style="font-size:11px;color:var(--text2);text-align:center;margin-top:8px;line-height:1.4">
+Bei kritisch kranken Patienten trotz gutem Score oder einem einzelnen Wert von 4 bitte Arzt verständigen.<br>
+Bei Score &lt; 4 PEWS alle 8h erheben.<br>Soeteman, M. et al. (2021), BMJ open, 11(5).</div>`;
+}
+
+function renderPhone(el){
+el.innerHTML=`<div class="section-title">Telefonnummern</div><div class="info-banner">St. Anna Kinderspital · Intern</div>`;
+PHONES.forEach(p=>{
+el.innerHTML+=`<div class="phone-item"><span class="name">${p.n}</span><span class="number">${p.t}</span></div>`;
+});
+el.innerHTML+=`<div style="height:16px"></div>
+<div class="drug-card"><div class="drug-name" style="color:var(--red)">Notruf</div>
+<div style="font-size:12px;margin-top:6px;line-height:1.6"><strong>Im Zimmer:</strong> 1) Pflege Anwesend → 2) Arztruf<br><strong>Am Stützpunkt:</strong> Arztnotruf</div></div>
+<div style="height:12px"></div>
+<div style="font-size:10px;color:var(--text2);text-align:center;line-height:1.4">
+Impressum: St. Anna Kinderspital: Station 1B, Anästhesie<br>
+Kontakt: Dr. Titieni-Schuhmann, Dr. Witt · Stand 12/2024<br>
+Quellen: ERC Guidelines (cprguidelines.eu); GRC (grc-org.de)</div>`;
+}
+
+// ─── TITLES ───
+const TITLES={home:"Notfallkarte",reanimation:"Reanimation",intubation:"Intubation",seizure:"Krampfanfall",
+anaphylaxis:"Anaphylaxie",svt:"SVT",antagonists:"Antagonisierung",sepsis:"Sepsis",
+abcde:"ABCDE",herzstillstand:"Herzstillstand",pews:"PEWS Score",phone:"Telefon"};
+const NOWEIGHT=new Set(['home','abcde','pews','phone','sepsis']);
+
+// ─── MAIN RENDER ───
+function render(){
+const app=document.getElementById('app');
+const pg=state.page;
+const needsW=!NOWEIGHT.has(pg);
+
+// Header
+let header=`<div class="header"><div class="header-top">`;
+if(pg!=='home')header+=`<button class="back-btn" id="backBtn">${ICO.back}</button>`;
+header+=`<h1>${TITLES[pg]||'Notfallkarte'}</h1><span class="header-badge">Notfall</span></div>`;
+if(needsW){
+header+=`<div class="weight-bar">`;
+AGE_PRESETS.forEach((p,i)=>{
+header+=`<button class="weight-chip ${state.preset===i?'active':''}" data-pi="${i}" data-kg="${p.kg}">${p.l} ${p.kg}kg</button>`;
+});
+header+=`<div class="custom-weight"><input type="number" inputmode="decimal" value="${state.weight}" id="wInput"><span>kg</span></div></div>`;
+}
+header+=`</div>`;
+
+// Tab bar
+const tabs=`<div class="tab-bar">
+<button class="tab-btn ${pg==='home'?'active':''}" data-page="home">${ICO.home}<span>Home</span></button>
+<button class="tab-btn ${pg==='herzstillstand'?'active':''}" data-page="herzstillstand">${ICO.heart}<span>CPR</span></button>
+<button class="tab-btn ${pg==='pews'?'active':''}" data-page="pews">${ICO.clip}<span>PEWS</span></button>
+<button class="tab-btn ${pg==='phone'?'active':''}" data-page="phone">${ICO.phone}<span>Telefon</span></button>
+</div>`;
+
+app.innerHTML=header+`<div class="content" id="content"></div>`+tabs;
+
+// Content
+const content=document.getElementById('content');
+const renderers={home:renderHome,reanimation:renderReanimation,intubation:renderIntubation,
+seizure:renderSeizure,anaphylaxis:renderAnaphylaxis,svt:renderSVT,antagonists:renderAntagonists,
+sepsis:renderSepsis,abcde:renderABCDE,herzstillstand:renderHerzstillstand,pews:renderPEWS,phone:renderPhone};
+(renderers[pg]||renderHome)(content);
+
+// Events
+const backBtn=document.getElementById('backBtn');
+if(backBtn)backBtn.onclick=()=>{state.page='home';render();window.scrollTo(0,0)};
+
+document.querySelectorAll('.weight-chip').forEach(btn=>{
+btn.onclick=()=>{
+state.preset=parseInt(btn.dataset.pi);
+state.weight=parseFloat(btn.dataset.kg);
+render();
+};
+});
+
+const wInput=document.getElementById('wInput');
+if(wInput)wInput.onchange=e=>{
+state.weight=parseFloat(e.target.value)||0;
+state.preset=-1;
+render();
+};
+
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+btn.onclick=()=>{state.page=btn.dataset.page;render();window.scrollTo(0,0)};
+});
+}
+
+render();
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js').catch(() => {});
+}
+</script>
+</body>
+</html>
